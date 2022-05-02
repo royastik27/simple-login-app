@@ -1,0 +1,9 @@
+#apps form {
+    margin: 1rem 2rem;
+    width: 40vw;
+    display: inline-block;
+}
+
+#apps input {
+    margin: 0rem 1rem 1rem 0rem;
+}

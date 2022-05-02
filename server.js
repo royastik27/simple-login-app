@@ -13,11 +13,12 @@ const templateLogin = fs.readFileSync(path.join(__dirname, '/templates/login.htm
 const templateDashboard = fs.readFileSync(path.join(__dirname, '/templates/dashboard.html'), 'utf-8');
 
 // DATABASE CLIENT
-const db = new mongoClient('mongodb://localhost:27017/');;
+const db = new mongoClient('mongodb://localhost:27017/');
 
 // app.use(express.json());
 app.use(express.urlencoded( {extended: true} ));
 app.use(session({resave: true, saveUninitialized: true, secret: 'XCR3rsasa%RDHHH', cookie: { }}));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.post('/login', async (req, res) =>
 {
@@ -29,6 +30,7 @@ app.post('/login', async (req, res) =>
 
     const result = await db.db('royastik27').collection('users').findOne( {username: username, password: password});
     
+    // CLOSING DATABASE CONNECTION
     await db.close();
     
     // PAGE RENDERING    
@@ -80,15 +82,15 @@ app.post('/', async(req, res) =>
     {
         console.log('Alternative of PUT:');
     }
-
-    // DATABASE CONNECTION
-
+    
     if(username && password && !edit)
     {
+        // DATABASE CONNECTION
         await db.connect();
     
         const result = await db.db('royastik27').collection('users').insertOne( { username: username, password: password });
 
+        // CLOSING DATABASE CONNECTION
         db.close();
     }
 
@@ -132,8 +134,7 @@ app.get('/', async (req, res) =>
         'Content-Type': 'text/html'
     });
     
-    res.end(output);
-    
+    res.end(output);    
 });
 
 app.listen(80, () =>
