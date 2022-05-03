@@ -35,13 +35,13 @@ function setID(el, id)
     // COLLECTING USERNAME AND PASSWORD FROM THE DOM
     el = el.parentElement.previousSibling;
     const password = el.textContent;
-    console.log(password);
-
     const username = el.previousSibling.textContent;
-    console.log(username);
 
-    // DISPLAYING USERNAME AND PASSWORD FROM THE DOM
-    // CODE HERE
+    // DISPLAYING USERNAME AND PASSWORD TO THE DOM
+    el = document.getElementById('userID').nextSibling.nextSibling;
+    el.value = username;
+    el = el.nextSibling.nextSibling;
+    el.value = password;
 
     // UPDATE FROM DOM h4
     elementForm.firstChild.nextSibling.textContent = 'Update User:';
