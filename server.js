@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const fs = require('fs');
 const path = require('path');
 const { runInNewContext } = require('vm');
+const { ObjectId } = require('mongodb');
 
 const templateLogin = fs.readFileSync(path.join(__dirname, '/templates/login.html'), 'utf-8');
 const templateDashboard = fs.readFileSync(path.join(__dirname, '/templates/dashboard.html'), 'utf-8');
@@ -65,7 +66,7 @@ app.use((req, res, next) =>
     if(!mySession.loggedIn) res.end(templateLogin);
     else next();
 
-    console.log(mySession.loggedIn);
+    // console.log(mySession.loggedIn);
 });
 
 app.post('/', async(req, res) =>
@@ -74,25 +75,36 @@ app.post('/', async(req, res) =>
     const password = req.body.password;
     const userID = req.body.userID;
     
-    console.log(`Username: ${username}`);
-    console.log(`Password: ${password}`);
-    console.log(`userID: ${userID}`);
+    // console.log(`Username: ${username}`);
+    // console.log(`Password: ${password}`);
+    // console.log(`userID: ${userID}`);
     
-    if(userID)
+    if(username && password)
     {
-        console.log('Alternative of PUT:');
-    }
+        if(userID === undefined) // if userID field is not there
+        {
+            // CREATE USER
+            // DATABASE CONNECTION
+            await db.connect();
     
-    if(username && password && !edit)
-    {
-        // DATABASE CONNECTION
-        await db.connect();
-    
-        const result = await db.db('royastik27').collection('users').insertOne( { username: username, password: password });
+            const result = await db.db('royastik27').collection('users').insertOne( { username: username, password: password });
 
-        // CLOSING DATABASE CONNECTION
-        db.close();
-    }
+            // CLOSING DATABASE CONNECTION
+            db.close();
+        }
+        else if(userID !== "") // userID field is there and not empty
+        {
+            // UPDATE USER
+            // DATABASE CONNECTION
+            await db.connect();
+
+            const result = await db.db('royastik27').collection('users').updateOne( {_id: ObjectId(userID)}, { $set: {username: username, password: password} } );
+            
+            // CLOSING DATABASE CONNECTION
+            await db.close();
+        }
+        else console.log('userID is empty!');
+    } else console.log("Invalid Input");
 
     res.redirect('/');
 });
