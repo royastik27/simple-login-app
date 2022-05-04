@@ -5,5 +5,5 @@
 - Open the directory in the terminal.
 - Run the command 'npm install' or simply, 'npm i'.
 - Then run another command 'node server.js'.
-- Logon 'http://localhost/' in you web browser.
+- Logon 'http://localhost:80/' in you web browser.
 - Now you are ready to use the application.

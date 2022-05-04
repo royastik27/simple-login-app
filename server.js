@@ -126,7 +126,7 @@ app.get('/', async (req, res) =>
         <th>ID</th>
         <th>Username</th>
         <th>Password</th>
-        <th>Select &nbsp;&nbsp;<button class='btn btn-secondary' onclick='uncheckRadios()'>Uncheck</button></th>
+        <th>Select &nbsp;&nbsp;<button class='btn btn-info' onclick='uncheckRadios()'>Uncheck</button></th>
     </tr>`;
     for(let i = 0; i < result.length; ++i)
     {
