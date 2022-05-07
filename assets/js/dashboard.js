@@ -1,3 +1,5 @@
+// SELECT BUTTON
+
 function uncheckRadios()
 {
     const nodes = document.querySelectorAll('input[type=radio]');
@@ -64,6 +66,28 @@ function setID(el, id)
 
     // UPDATE FROM DOM h4
     elementForm.firstChild.nextSibling.textContent = 'Update User:';
+}
+
+// DELETE BUTTON
+
+const user = document.getElementsByClassName('user-single');
+
+// SHOW DELETE BUTTON ON HOVER
+for(let i = 0; i < user.length; ++i)
+{
+    user[i].addEventListener('mouseenter', (e) =>
+    {
+        // console.log(e.target);
+        const el = e.target.lastChild.previousSibling.lastChild.previousSibling;
+        el.style.display = 'inline';
+    });
+
+    user[i].addEventListener('mouseleave', (e) =>
+    {
+        const el = e.target.lastChild.previousSibling.lastChild.previousSibling;
+        el.style.display = 'none';
+        // el.style.display = 'none';
+    });
 }
 
 // ADD VIEW PASSWORD FUNCTiONALITY

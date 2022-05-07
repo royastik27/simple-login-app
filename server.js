@@ -7,7 +7,6 @@ const mongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser')
 const fs = require('fs');
 const path = require('path');
-const { runInNewContext } = require('vm');
 const { ObjectId } = require('mongodb');
 
 const templateLogin = fs.readFileSync(path.join(__dirname, '/templates/login.html'), 'utf-8');
@@ -65,8 +64,6 @@ app.use((req, res, next) =>
 
     if(!mySession.loggedIn) res.end(templateLogin);
     else next();
-
-    // console.log(mySession.loggedIn);
 });
 
 app.post('/', async(req, res) =>
@@ -74,10 +71,6 @@ app.post('/', async(req, res) =>
     const username = req.body.username;
     const password = req.body.password;
     const userID = req.body.userID;
-    
-    // console.log(`Username: ${username}`);
-    // console.log(`Password: ${password}`);
-    // console.log(`userID: ${userID}`);
     
     if(username && password)
     {
@@ -116,6 +109,15 @@ app.get('/', async (req, res) =>
     // DATABSE CONNECTION
     await db.connect();
 
+    // DELETE USER
+    const toDelete = req.query.delete;
+    if(toDelete)
+    {
+        await db.db('royastik27').collection('users').deleteOne( {_id: ObjectId(toDelete)} );
+        // on failure: { acknowledged: true, deletedCount: 0 }
+    }
+
+    // GET ALL USERS
     const result = await db.db('royastik27').collection('users').find().toArray();
 
     // DELETE THIS
@@ -130,7 +132,15 @@ app.get('/', async (req, res) =>
     </tr>`;
     for(let i = 0; i < result.length; ++i)
     {
-        templateUsers += `<tr><td>${result[i]._id}</td><td>${result[i].username}</td><td>${result[i].password}</td><td><input type='radio' name='selectUser' onclick="setID(this, '${result[i]._id}')"></td></tr>`;
+        templateUsers += `<tr class='user-single'>
+            <td>${result[i]._id}</td>
+            <td>${result[i].username}</td>
+            <td>${result[i].password}</td>
+            <td>
+                <input type='radio' name='selectUser' onclick="setID(this, '${result[i]._id}')"> &nbsp;
+                <a href='?delete=${result[i]._id}' class='btn btn-secondary' style='display: none; border-radius: 100%;'>X</a>
+            </td>
+            </tr>`;
     }
 
     templateUsers += '</table></form>';
